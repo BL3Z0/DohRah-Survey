@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Survey: The Afaha's Family Product</title>
+    <title>Product Survey: The Afaha's Family Product - FIXED VERSION</title>
     <style>
         * {
             margin: 0;
@@ -941,6 +941,35 @@
             </div>
         </div>
     </div>
+    
+    <div class="page" id="page-email-instructions">
+            <div class="thank-you">
+                <h2>📧 Almost Done!</h2>
+                <p>Your responses are ready to be sent!</p>
+                
+                <div class="email-instructions" style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; margin: 20px 0;">
+                    <h3>How to submit your responses:</h3>
+                    <ol style="text-align: left; margin: 20px; color: #e6e6fa;">
+                        <li>Click the "📧 Email My Responses" button below</li>
+                        <li>Your email app will open with everything pre-filled</li>
+                        <li>Make sure it's addressed to: <strong>afahablessing@gmail.com</strong></li>
+                        <li>Click "Send" - that's it!</li>
+                    </ol>
+                    <p style="color: #d8bfd8; margin-top: 20px;"><em>This ensures I actually receive your feedback! 💜</em></p>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn-next" onclick="sendEmailResponses()" style="font-size: 1.2rem; padding: 18px 35px;">
+                        📧 Email My Responses to Afaha
+                    </button>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn-prev" onclick="showPage('page-improvements')">← Back to Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Create animated night sky with stars
@@ -1092,7 +1121,9 @@
             surveyData.favoriteColor = document.getElementById('favorite-color').value;
             surveyData.relationship = document.getElementById('relationship').value;
             surveyData.favoriteThing = document.getElementById('favorite-thing').value;
+            surveyData.memorableFeature = document.querySelector('#page-familiarity .option.selected')?.textContent || '';
             surveyData.description = document.getElementById('description').value;
+            surveyData.recommendation = document.querySelector('#page-satisfaction .option.selected')?.textContent || '';
             surveyData.alternative = document.getElementById('alternative').value;
             surveyData.bugs = document.getElementById('bugs').value;
             surveyData.frustrating = document.getElementById('frustrating').value;
@@ -1107,7 +1138,7 @@
             localStorage.setItem('afahaSurveyResponses', JSON.stringify(allResponses));
             
             // Show thank you page
-            showPage('page-thankyou');
+            showPage('page-email-instructions');
         }
         
         // Function to display all responses
@@ -1244,7 +1275,54 @@
         document.addEventListener('DOMContentLoaded', function() {
             createNightSky();
             displayAllResponses();
-        });
+        })
+        
+        // ADD THIS NEW FUNCTION:
+        function sendEmailResponses() {
+            // CHANGE THIS TO YOUR ACTUAL EMAIL:
+            const yourEmail = "afahablessing@gmail.com";
+            
+            const subject = `Survey Response from ${surveyData.userName}`;
+            const body = `
+🌟 NEW SURVEY RESPONSE FOR DOH_RAH! 🌟
+
+Respondent: ${surveyData.userName}
+Submitted: ${surveyData.timestamp}
+
+📊 PRODUCT FAMILIARITY:
+• How often used: ${surveyData.utilization}
+• Thinks my favorite color is: ${surveyData.favoriteColor}
+• Sees me as: ${surveyData.relationship}
+• Favorite thing about me: ${surveyData.favoriteThing}
+• Most memorable feature: ${surveyData.memorableFeature}
+
+⭐ SATISFACTION:
+• Experience rating: ${surveyData.experienceRating}/5 stars
+• One-sentence description: "${surveyData.description}"
+• Recommendation: ${surveyData.recommendation}
+• Would replace me with: ${surveyData.alternative}
+
+🐛 PERFORMANCE ISSUES:
+• Bugs/glitches noticed: ${surveyData.bugs}
+• Frustrating/confusing: ${surveyData.frustrating}
+
+💡 IMPROVEMENTS:
+• Could do better: ${surveyData.improveLife}
+• Feature to improve: ${surveyData.featureUpdate}
+
+--
+Sent via DohRah's Interactive Survey 💫
+            `.trim();
+
+            // Open email client
+            const mailtoLink = `mailto:${yourEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.open(mailtoLink, '_blank');
+            
+            // Show thank you page
+            setTimeout(() => {
+                showPage('page-thankyou');
+            }, 1000);
+        };
     </script>
 </body>
 </html>
