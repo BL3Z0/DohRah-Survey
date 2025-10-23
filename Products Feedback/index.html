@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Survey: The Afaha's Family Product</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c0c2e 0%, #1a1a4a 50%, #2d1b69 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        /* Night Sky with Animated Stars */
+        .night-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .sky-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: var(--opacity);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--opacity); transform: scale(1); }
+            50% { opacity: calc(var(--opacity) * 1.5); transform: scale(1.2); }
+        }
+
+        /* Shooting Stars */
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 4px 2px rgba(255,255,255,0.8);
+            animation: shoot linear infinite;
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0) rotate(45deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) translateY(100vh) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        /* Profile Photo Styles */
+        .photo-container {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .profile-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid #9370db;
+            box-shadow: 
+                0 8px 25px rgba(106, 90, 205, 0.4),
+                0 0 0 12px rgba(147, 112, 219, 0.1),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+            object-fit: cover;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+                box-shadow: 
+                    0 8px 25px rgba(106, 90, 205, 0.4),
+                    0 0 0 12px rgba(147, 112, 219, 0.1);
+            }
+            50% { 
+                transform: translateY(-15px) rotate(2deg);
+                box-shadow: 
+                    0 15px 35px rgba(106, 90, 205, 0.6),
+                    0 0 0 12px rgba(147, 112, 219, 0.2);
+            }
+        }
+
+        .profile-photo:hover {
+            animation: none;
+            transform: scale(1.08) rotate(5deg);
+            box-shadow: 
+                0 20px 40px rgba(106, 90, 205, 0.7),
+                0 0 0 15px rgba(147, 112, 219, 0.3);
+        }
+
+        .photo-caption {
+            margin-top: 20px;
+            color: #e0c3fc;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            background: linear-gradient(135deg, #e0c3fc, #d8bfd8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .photo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(147, 112, 219, 0.3) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .container {
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                        0 0 80px rgba(106, 90, 205, 0.2);
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #9370db, #6a5acd, #9370db, transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(106, 90, 205, 0.5);
+            background: linear-gradient(135deg, #ffffff, #e0c3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            color: #d8bfd8;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 1.6rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        h3 {
+            color: #e0c3fc;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(147, 112, 219, 0.3);
+            font-size: 1.4rem;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c0c2e 0%, #1a1a4a 50%, #2d1b69 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        /* Night Sky with Animated Stars */
+        .night-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .sky-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: var(--opacity);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--opacity); transform: scale(1); }
+            50% { opacity: calc(var(--opacity) * 1.5); transform: scale(1.2); }
+        }
+
+        /* Shooting Stars */
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 4px 2px rgba(255,255,255,0.8);
+            animation: shoot linear infinite;
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0) rotate(45deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) translateY(100vh) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                        0 0 80px rgba(106, 90, 205, 0.2);
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #9370db, #6a5acd, #9370db, transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(106, 90, 205, 0.5);
+            background: linear-gradient(135deg, #ffffff, #e0c3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            color: #d8bfd8;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+            font-size: 1.6rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        h3 {
+            color: #e0c3fc;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(147, 112, 219, 0.3);
+            font-size: 1.4rem;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .question {
+            margin-bottom: 30px;
+        }
+
+        .question p {
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #e6e6fa;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(230, 230, 250, 0.3);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            color: #e6e6fa;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            background: rgba(147, 112, 219, 0.3);
+            border-color: #9370db;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(106, 90, 205, 0.3);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #9370db, #6a5acd);
+            border-color: #e0c3fc;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(106, 90, 205, 0.4);
+        }
+
+        input[type="text"], input[type="password"], textarea {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(230, 230, 250, 0.3);
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.4s ease;
+            color: white;
+        }
+
+        input[type="text"]::placeholder, input[type="password"]::placeholder, textarea::placeholder {
+            color: rgba(230, 230, 250, 0.7);
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+            outline: none;
+            border-color: #9370db;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(147, 112, 219, 0.3);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #9370db, #6a5acd);
+            color: white;
+            box-shadow: 0 6px 15px rgba(106, 90, 205, 0.4);
+        }
+
+        .btn-next:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(106, 90, 205, 0.5);
+        }
+
+        .btn-prev {
+            background: rgba(255, 255, 255, 0.15);
+            color: #e6e6fa;
+            border: 2px solid rgba(230, 230, 250, 0.3);
+        }
+
+        .btn-prev:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .skip-btn {
+            background: transparent;
+            color: #d8bfd8;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            padding: 8px 15px;
+            border: 1px solid transparent;
+        }
+
+        .skip-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(216, 191, 216, 0.3);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #9370db, #6a5acd, #e0c3fc);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .thank-you {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .thank-you h2 {
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #ffffff, #e0c3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .thank-you p {
+            color: #e6e6fa;
+            margin-bottom: 25px;
+            line-height: 1.7;
+            font-size: 1.1rem;
+        }
+
+        .note {
+            font-style: italic;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            border-left: 4px solid #9370db;
+            color: #d8bfd8;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* FIXED: Rating Stars - Different class name to avoid conflict */
+        .rating-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .rating-star {
+            font-size: 2.5rem;
+            color: rgba(230, 230, 250, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .rating-star:hover {
+            transform: scale(1.2);
+            color: rgba(255, 215, 0, 0.5);
+        }
+
+        .rating-star.active {
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+            transform: scale(1.1);
+        }
+
+        .admin-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(147, 112, 219, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .password-prompt {
+            background: rgba(255, 240, 245, 0.15);
+            border: 2px solid rgba(216, 191, 216, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .password-prompt h3 {
+            color: #e0c3fc;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .submission {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(230, 230, 250, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            backdrop-filter: blur(5px);
+        }
+
+        .submission h4 {
+            color: #e0c3fc;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .response-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            color: #e6e6fa;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 15px;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .success-message {
+            color: #51cf66;
+            margin-top: 15px;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="night-sky" id="nightSky"></div>
+    
+    <div class="container">
+        <!-- Welcome Page -->
+        <div class="page active" id="page-welcome">
+            <h1>FROM THE MANUFACTURERS OF: AFAHA BLESSING PHILIP</h1>
+            <h2>Customer Satisfaction Survey: THE AFAHA'S FAMILY PRODUCT</h2>
+            
+            <!-- ADD YOUR PHOTO HERE -->
+            <div class="photo-container">
+                <div class="photo-glow"></div>
+                <img src="your-photo.jpg" alt="Afaha Blessing Philip" class="profile-photo">
+                <div class="photo-caption">Meet the Product! 🎯</div>
+            </div>
+            
+            <p style="text-align: center; margin-bottom: 30px; font-size: 1.3rem; color: #d8bfd8;">
+                "we sent our product into the world, 😂 how's it going?"
+            </p>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="btn-next" onclick="showPage('page-user')">Start Survey</button>
+                <button class="btn-prev" onclick="showPage('page-password')" style="margin-left: 20px;">View Responses</button>
+            </div>
+        </div>
+        
+        <!-- Password Protection Page -->
+        <div class="page" id="page-password">
+            <div class="password-prompt">
+                <h3>🔒 Password Required</h3>
+                <p style="color: #e6e6fa; margin-bottom: 20px;">Enter the password to view survey responses:</p>
+                <input type="password" id="admin-password" placeholder="Enter password" style="margin: 20px 0;">
+                <div>
+                    <button class="btn-next" onclick="checkPassword()">Access Responses</button>
+                    <button class="btn-prev" onclick="showPage('page-welcome')" style="margin-left: 15px;">Back</button>
+                </div>
+                <div id="password-error" class="error-message"></div>
+            </div>
+        </div>
+        
+        <!-- User Name Page -->
+        <div class="page" id="page-user">
+            <div class="progress-bar">
+                <div class="progress" style="width: 10%;"></div>
+            </div>
+            
+            <h3>Let's Get Started</h3>
+            <div class="question">
+                <p>Please enter your name (optional):</p>
+                <input type="text" id="user-name" placeholder="Your name">
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn-prev" onclick="showPage('page-welcome')">Previous</button>
+                <button class="btn-next" onclick="saveUserName()">Next</button>
+            </div>
+            
+            <button class="skip-btn" onclick="saveUserName(true)">Skip</button>
+        </div>
+        
+        <!-- Product Familiarity Page -->
+        <div class="page" id="page-familiarity">
+            <div class="progress-bar">
+                <div class="progress" style="width: 25%;"></div>
+            </div>
+            
+            <h3>PRODUCT FAMILIARITY</h3>
+            
+            <div class="question">
+                <p>How often do you utilize our product?</p>
+                <input type="text" id="utilization" placeholder="Your answer">
+            </div>
+            
+            <div class="question">
+                <p>What's our product's [Doh_Rah] favorite color?</p>
+                <input type="text" id="favorite-color" placeholder="Enter color">
+            </div>
+            
+            <div class="question">
+                <p>Who is our product [Doh_Rah] to you?</p>
+                <input type="text" id="relationship" placeholder="e.g., Best friend, partner in crime, etc.">
+            </div>
+            
+            <div class="question">
+                <p>What's your favorite thing about our product [Doh_Rah]?</p>
+                <textarea id="favorite-thing" placeholder="Your answer"></textarea>
+            </div>
+            
+            <div class="question">
+                <p>What was the most memorable "feature" you noticed upon first encounter?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'feature')">a.) The stunning physical design (aka the face)</div>
+                    <div class="option" onclick="selectOption(this, 'feature')">b.) The unique and captivating personality (Operating System)</div>
+                    <div class="option" onclick="selectOption(this, 'feature')">c.) The unnervingly good listener vibe</div>
+                    <div class="option" onclick="selectOption(this, 'feature')">d.) None</div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn-prev" onclick="showPage('page-user')">Previous</button>
+                <button class="btn-next" onclick="showPage('page-satisfaction')">Next</button>
+            </div>
+            
+            <button class="skip-btn" onclick="showPage('page-satisfaction')">Skip This Section</button>
+        </div>
+        
+        <!-- General Satisfaction Page -->
+        <div class="page" id="page-satisfaction">
+            <div class="progress-bar">
+                <div class="progress" style="width: 50%;"></div>
+            </div>
+            
+            <h3>GENERAL SATISFACTION</h3>
+            <p style="margin-bottom: 25px; color: #d8bfd8; font-style: italic;">Accessing users experience.</p>
+            
+            <div class="question">
+                <p>How would you rate your overall experience with our product, [Doh_Rah]?</p>
+                <div class="rating-container">
+                    <span class="rating-star" onclick="rateExperience(1)">★</span>
+                    <span class="rating-star" onclick="rateExperience(2)">★</span>
+                    <span class="rating-star" onclick="rateExperience(3)">★</span>
+                    <span class="rating-star" onclick="rateExperience(4)">★</span>
+                    <span class="rating-star" onclick="rateExperience(5)">★</span>
+                </div>
+                <div style="text-align: center; margin-top: 15px; color: #d8bfd8; font-size: 1rem;">
+                    <span>Poor</span>
+                    <span style="margin-left: 80px;">Excellent</span>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p>How would you describe [Doh_Rah] in one sentence to someone who has never met them?</p>
+                <textarea id="description" placeholder="Your one-sentence description"></textarea>
+            </div>
+            
+            <div class="question">
+                <p>How likely are you to recommend this product to a friend or colleague?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'recommendation')">a.) Very likely</div>
+                    <div class="option" onclick="selectOption(this, 'recommendation')">b.) Most likely</div>
+                    <div class="option" onclick="selectOption(this, 'recommendation')">c.) DEFINATELY!!!</div>
+                    <div class="option" onclick="selectOption(this, 'recommendation')">d.) Godforbid!😭</div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <p>If you had to replace our product with an alternative, who or what would it be and why?</p>
+                <textarea id="alternative" placeholder="Your answer"></textarea>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn-prev" onclick="showPage('page-familiarity')">Previous</button>
+                <button class="btn-next" onclick="showPage('page-performance')">Next</button>
+            </div>
+            
+            <button class="skip-btn" onclick="showPage('page-performance')">Skip This Section</button>
+        </div>
+        
+        <!-- Performance Issues Page -->
+        <div class="page" id="page-performance">
+            <div class="progress-bar">
+                <div class="progress" style="width: 75%;"></div>
+            </div>
+            
+            <h3>PERFORMANCE ISSUES</h3>
+            
+            <div class="question">
+                <p>Have you encountered any bugs or glitches with this product? If so, please describe them (e.g., "anger issues," "zones out on conversations," "random mood swings" e.t.c).</p>
+                <textarea id="bugs" placeholder="Describe any bugs or glitches"></textarea>
+            </div>
+            
+            <div class="question">
+                <p>What is one thing that has been consistently frustrating or confusing about our product?</p>
+                <textarea id="frustrating" placeholder="Your answer"></textarea>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn-prev" onclick="showPage('page-satisfaction')">Previous</button>
+                <button class="btn-next" onclick="showPage('page-improvements')">Next</button>
+            </div>
+            
+            <button class="skip-btn" onclick="showPage('page-improvements')">Skip This Section</button>
+        </div>
+        
+        <!-- Improvements Page -->
+        <div class="page" id="page-improvements">
+            <div class="progress-bar">
+                <div class="progress" style="width: 90%;"></div>
+            </div>
+            
+            <h3>IMPROVEMENTS</h3>
+            
+            <div class="question">
+                <p>What's one thing our product could do better to improve your daily life?</p>
+                <textarea id="improve-life" placeholder="Your answer"></textarea>
+            </div>
+            
+            <div class="question">
+                <p>In the next software update, what feature would you like to see improved?</p>
+                <textarea id="feature-update" placeholder="Your answer"></textarea>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn-prev" onclick="showPage('page-performance')">Previous</button>
+                <button class="btn-next" onclick="saveSurvey()">Submit Survey</button>
+            </div>
+            
+            <button class="skip-btn" onclick="saveSurvey()">Skip & Submit</button>
+        </div>
+        
+        <!-- Thank You Page -->
+        <div class="page" id="page-thankyou">
+            <div class="thank-you">
+                <h2>THANK U! 💕</h2>
+                <p>For your valuable feedback!</p>
+                <p>Your response has been recorded successfully!</p>
+                
+                <div class="note">
+                    <p>Kindly NOTE: Results may be used for ego-boosting purposes or as blackmail at a later date. Proceed with caution.</p>
+                </div>
+                
+                <div style="margin-top: 40px;">
+                    <button class="btn-next" onclick="restartSurvey()">Take Survey Again</button>
+                    <button class="btn-prev" onclick="showPage('page-password')" style="margin-left: 20px;">View All Responses</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel - View All Responses -->
+        <div class="page" id="page-admin">
+            <h2>📊 Survey Responses</h2>
+            <p style="text-align: center; margin-bottom: 25px; color: #d8bfd8;">All submitted responses</p>
+            
+            <div class="admin-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3>Total Responses: <span id="response-count">0</span></h3>
+                    <div>
+                        <button class="btn-next" onclick="exportToCSV()">Export to CSV</button>
+                        <button class="btn-prev" onclick="clearAllResponses()" style="margin-left: 15px;">Clear All</button>
+                    </div>
+                </div>
+                
+                <div id="responses-container">
+                    <!-- Responses will be displayed here -->
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 35px;">
+                <button class="btn-prev" onclick="showPage('page-welcome')">Back to Survey</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create animated night sky with stars
+        function createNightSky() {
+            const nightSky = document.getElementById('nightSky');
+            const starCount = 150;
+            
+            // Create regular stars
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'sky-star';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--duration', (Math.random() * 10 + 5) + 's');
+                star.style.setProperty('--opacity', Math.random() * 0.8 + 0.2);
+                nightSky.appendChild(star);
+            }
+            
+            // Create shooting stars
+            setInterval(() => {
+                const shootingStar = document.createElement('div');
+                shootingStar.className = 'shooting-star';
+                shootingStar.style.left = Math.random() * 20 + '%';
+                shootingStar.style.top = Math.random() * 20 + '%';
+                shootingStar.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                nightSky.appendChild(shootingStar);
+                
+                setTimeout(() => {
+                    shootingStar.remove();
+                }, 5000);
+            }, 3000);
+        }
+
+        // Store all survey responses
+        let allResponses = JSON.parse(localStorage.getItem('afahaSurveyResponses')) || [];
+        
+        // Current survey data
+        const surveyData = {
+            userName: '',
+            utilization: '',
+            favoriteColor: '',
+            relationship: '',
+            favoriteThing: '',
+            memorableFeature: '',
+            experienceRating: 0,
+            description: '',
+            recommendation: '',
+            alternative: '',
+            bugs: '',
+            frustrating: '',
+            improveLife: '',
+            featureUpdate: '',
+            timestamp: ''
+        };
+        
+        // Password for admin access
+        const ADMIN_PASSWORD = "Li_Sa";
+        
+        // Function to show a specific page
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show the requested page
+            document.getElementById(pageId).classList.add('active');
+            
+            // If showing admin page, refresh responses
+            if (pageId === 'page-admin') {
+                displayAllResponses();
+            }
+            
+            // Clear password field when showing password page
+            if (pageId === 'page-password') {
+                document.getElementById('admin-password').value = '';
+                document.getElementById('password-error').textContent = '';
+            }
+            
+            // Scroll to top of page
+            window.scrollTo(0, 0);
+        }
+        
+        // Function to check password
+        function checkPassword() {
+            const enteredPassword = document.getElementById('admin-password').value;
+            const errorElement = document.getElementById('password-error');
+            
+            if (enteredPassword === ADMIN_PASSWORD) {
+                errorElement.textContent = '';
+                showPage('page-admin');
+            } else {
+                errorElement.textContent = 'Incorrect password. Please try again.';
+            }
+        }
+        
+        // Function to save user name
+        function saveUserName(skip = false) {
+            if (!skip) {
+                const userName = document.getElementById('user-name').value;
+                surveyData.userName = userName || 'Anonymous User';
+            } else {
+                surveyData.userName = 'Anonymous User';
+            }
+            
+            showPage('page-familiarity');
+        }
+        
+        // Function to handle option selection
+        function selectOption(element, field) {
+            // Remove selected class from all options in the same question
+            const parent = element.parentElement;
+            parent.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Store the selected value
+            if (field === 'feature') {
+                surveyData.memorableFeature = element.textContent;
+            } else if (field === 'recommendation') {
+                surveyData.recommendation = element.textContent;
+            }
+        }
+        
+        // FIXED: Function to handle star rating with correct class names
+        function rateExperience(rating) {
+            surveyData.experienceRating = rating;
+            
+            // Update star display
+            const stars = document.querySelectorAll('.rating-star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+        
+        // Function to save survey data
+        function saveSurvey() {
+            // Collect data from form elements
+            surveyData.utilization = document.getElementById('utilization').value;
+            surveyData.favoriteColor = document.getElementById('favorite-color').value;
+            surveyData.relationship = document.getElementById('relationship').value;
+            surveyData.favoriteThing = document.getElementById('favorite-thing').value;
+            surveyData.description = document.getElementById('description').value;
+            surveyData.alternative = document.getElementById('alternative').value;
+            surveyData.bugs = document.getElementById('bugs').value;
+            surveyData.frustrating = document.getElementById('frustrating').value;
+            surveyData.improveLife = document.getElementById('improve-life').value;
+            surveyData.featureUpdate = document.getElementById('feature-update').value;
+            surveyData.timestamp = new Date().toLocaleString();
+            
+            // Add to all responses
+            allResponses.push({...surveyData});
+            
+            // Save to localStorage
+            localStorage.setItem('afahaSurveyResponses', JSON.stringify(allResponses));
+            
+            // Show thank you page
+            showPage('page-thankyou');
+        }
+        
+        // Function to display all responses
+        function displayAllResponses() {
+            const container = document.getElementById('responses-container');
+            const countElement = document.getElementById('response-count');
+            
+            countElement.textContent = allResponses.length;
+            
+            if (allResponses.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #d8bfd8; padding: 30px;">No responses yet. Share the survey with your friends!</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            allResponses.forEach((response, index) => {
+                const submission = document.createElement('div');
+                submission.className = 'submission';
+                
+                submission.innerHTML = `
+                    <h4>Response #${index + 1} - ${response.userName} (${response.timestamp})</h4>
+                    <div class="response-item"><strong>Utilization:</strong> ${response.utilization || 'Not answered'}</div>
+                    <div class="response-item"><strong>Favorite Color:</strong> ${response.favoriteColor || 'Not answered'}</div>
+                    <div class="response-item"><strong>Relationship:</strong> ${response.relationship || 'Not answered'}</div>
+                    <div class="response-item"><strong>Favorite Thing:</strong> ${response.favoriteThing || 'Not answered'}</div>
+                    <div class="response-item"><strong>Memorable Feature:</strong> ${response.memorableFeature || 'Not answered'}</div>
+                    <div class="response-item"><strong>Experience Rating:</strong> ${response.experienceRating}/5</div>
+                    <div class="response-item"><strong>Description:</strong> ${response.description || 'Not answered'}</div>
+                    <div class="response-item"><strong>Recommendation:</strong> ${response.recommendation || 'Not answered'}</div>
+                    <div class="response-item"><strong>Alternative:</strong> ${response.alternative || 'Not answered'}</div>
+                    <div class="response-item"><strong>Bugs/Glitches:</strong> ${response.bugs || 'Not answered'}</div>
+                    <div class="response-item"><strong>Frustrating:</strong> ${response.frustrating || 'Not answered'}</div>
+                    <div class="response-item"><strong>Improve Life:</strong> ${response.improveLife || 'Not answered'}</div>
+                    <div class="response-item"><strong>Feature Update:</strong> ${response.featureUpdate || 'Not answered'}</div>
+                `;
+                
+                container.appendChild(submission);
+            });
+        }
+        
+        // Function to export to CSV
+        function exportToCSV() {
+            if (allResponses.length === 0) {
+                alert('No responses to export!');
+                return;
+            }
+            
+            const headers = ['Name', 'Timestamp', 'Utilization', 'Favorite Color', 'Relationship', 'Favorite Thing', 'Memorable Feature', 'Experience Rating', 'Description', 'Recommendation', 'Alternative', 'Bugs/Glitches', 'Frustrating', 'Improve Life', 'Feature Update'];
+            
+            let csv = headers.join(',') + '\n';
+            
+            allResponses.forEach(response => {
+                const row = [
+                    response.userName,
+                    response.timestamp,
+                    `"${(response.utilization || '').replace(/"/g, '""')}"`,
+                    `"${(response.favoriteColor || '').replace(/"/g, '""')}"`,
+                    `"${(response.relationship || '').replace(/"/g, '""')}"`,
+                    `"${(response.favoriteThing || '').replace(/"/g, '""')}"`,
+                    `"${(response.memorableFeature || '').replace(/"/g, '""')}"`,
+                    response.experienceRating,
+                    `"${(response.description || '').replace(/"/g, '""')}"`,
+                    `"${(response.recommendation || '').replace(/"/g, '""')}"`,
+                    `"${(response.alternative || '').replace(/"/g, '""')}"`,
+                    `"${(response.bugs || '').replace(/"/g, '""')}"`,
+                    `"${(response.frustrating || '').replace(/"/g, '""')}"`,
+                    `"${(response.improveLife || '').replace(/"/g, '""')}"`,
+                    `"${(response.featureUpdate || '').replace(/"/g, '""')}"`
+                ];
+                
+                csv += row.join(',') + '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'afaha_survey_responses.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Function to clear all responses
+        function clearAllResponses() {
+            if (confirm('Are you sure you want to delete all survey responses? This action cannot be undone.')) {
+                allResponses = [];
+                localStorage.setItem('afahaSurveyResponses', JSON.stringify(allResponses));
+                displayAllResponses();
+            }
+        }
+        
+        // Function to restart the survey
+        function restartSurvey() {
+            // Reset all form fields
+            document.getElementById('user-name').value = '';
+            document.getElementById('utilization').value = '';
+            document.getElementById('favorite-color').value = '';
+            document.getElementById('relationship').value = '';
+            document.getElementById('favorite-thing').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('alternative').value = '';
+            document.getElementById('bugs').value = '';
+            document.getElementById('frustrating').value = '';
+            document.getElementById('improve-life').value = '';
+            document.getElementById('feature-update').value = '';
+            
+            // Clear all selected options
+            document.querySelectorAll('.option.selected').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Reset stars
+            document.querySelectorAll('.rating-star.active').forEach(star => {
+                star.classList.remove('active');
+            });
+            
+            // Reset survey data (but keep timestamp field)
+            const timestamp = surveyData.timestamp;
+            Object.keys(surveyData).forEach(key => {
+                surveyData[key] = '';
+            });
+            surveyData.experienceRating = 0;
+            surveyData.userName = '';
+            surveyData.timestamp = timestamp;
+            
+            // Go back to welcome page
+            showPage('page-welcome');
+        }
+        
+        // Initialize by loading any existing responses and creating night sky
+        document.addEventListener('DOMContentLoaded', function() {
+            createNightSky();
+            displayAllResponses();
+        });
+    </script>
+</body>
+</html>
